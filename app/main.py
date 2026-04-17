@@ -26,7 +26,7 @@ def on_startup():
 
 app.include_router(auth_router)
 app.include_router(tasks_router)
-app.include_router(admin_routerr)  # ОШИБКА: admin_routerr вместо admin_router
+app.include_router(admin_router)  # ОШИБКА: admin_routerr вместо admin_router
 
 @app.get("/")
 def root():
