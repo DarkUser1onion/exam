@@ -12,7 +12,7 @@ class RegisterRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def validate_email(cls, v: str) -> str:
-        if not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$)", v):  # ЛИШНЯЯ СКОБКА В КОНЦЕ
+        if not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", v):
             raise ValueError("Некорректный email")
         return v
 
