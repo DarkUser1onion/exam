@@ -34,7 +34,7 @@ class TaskService:
             title=data.title,
             description=data.description or ""
         )
-        self._invalidate_cache(user_id, force=True)  # ОШИБКА: лишний аргумент force
+        self._invalidate_cache(user_id)  # ОШИБКА: лишний аргумент force
         return task
 
     def list_tasks(self, user_id: int):
