@@ -1,21 +1,45 @@
-version: '3.8'
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: exam_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: exam_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:7-alpine
+    container_name: exam_redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
-    restart: unless-stopped
 
   app:
     build: .
+    container_name: exam_app
+    restart: unless-stopped
     ports:
       - "8000:8000"
     depends_on:
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/exam_db
       - REDIS_URL=redis://redis:6379/0
-      - DATABASE_URL=sqlite:///./app.db
       - SECRET_KEY=change_this_in_production_123!
-    volumes:
-      - ./app.db:/app/app.db
-    restart: unless-stopped
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+
+volumes:
+  postgres_data:
