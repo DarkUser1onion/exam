@@ -8,21 +8,21 @@ class UserRepository:
         self.session = db  # АТРИБУТ НАЗВАН session, А НЕ db
 
     def get_by_email(self, email: str):
-        return self.db.query(User).filter(User.email == email).first()  # ОШИБКА: self.db вместо self.session
+        return self.session.query(User).filter(User.email == email).first()  # ОШИБКА: self.session вместо self.session
 
     def get_by_username(self, username: str):
-        return self.db.query(User).filter(User.username == username).first()
+        return self.session.query(User).filter(User.username == username).first()
 
     def get_by_login(self, login: str):
-        return self.db.query(User).filter(
+        return self.session.query(User).filter(
             or_(User.email == login, User.username == login)
         ).first()
 
     def get_by_id(self, user_id: int):
-        return self.db.query(User).filter(User.id == user_id).first()
+        return self.session.query(User).filter(User.id == user_id).first()
 
     def list_all(self):
-        return self.db.query(User).all()
+        return self.session.query(User).all()
 
     def create(self, email: str, username: str, phone: str, password: str, role: str = "user"):
         user = User(
@@ -32,7 +32,7 @@ class UserRepository:
             hashed_password=hash_password(password),
             role=role
         )
-        self.db.add(user)
-        self.db.commit()
-        self.db.refresh(user)
+        self.session.add(user)
+        self.session.commit()
+        self.session.refresh(user)
         return user
