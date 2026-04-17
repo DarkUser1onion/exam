@@ -3,4 +3,3 @@ __pycache__/
 .env
 app.db
 .venv/
-README_assets/
